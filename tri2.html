@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector2D Triangle</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+        class Vector2D {
+            constructor(x, y) {
+                this._x = x;
+                this._y = y;
+            }
+
+            get x() {
+                return this._x;
+            }
+
+            set x(value) {
+                this._x = value;
+            }
+
+            get y() {
+                return this._y;
+            }
+
+            set y(value) {
+                this._y = value;
+            }
+
+            getXY() {
+                return [this._x, this._y];
+            }
+
+            static plus(u, v) {
+                return new Vector2D(u.x + v.x, u.y + v.y);
+            }
+
+            static minus(u, v) {
+                return new Vector2D(u.x - v.x, u.y - v.y);
+            }
+
+            static mult(v, c) {
+                return new Vector2D(c * v.x, c * v.y);
+            }
+
+            incr(v) {
+                this._x += v.x;
+                this._y += v.y;
+                return this;
+            }
+
+            decr(v) {
+                this._x -= v.x;
+                this._y -= v.y;
+                return this;
+            }
+
+            scale(c) {
+                this._x *= c;
+                this._y *= c;
+                return this;
+            }
+
+            rotate(C, cosphi, sinphi) {
+                const dx = this._x - C.x;
+                const dy = this._y - C.y;
+                return new Vector2D(
+                    C.x + dx * cosphi - dy * sinphi,
+                    C.y + dx * sinphi + dy * cosphi
+                );
+            }
+
+            print() {
+                console.log(`( ${this._x}, ${this._y} )`);
+            }
+        }
+
+        window.onload = () => {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            if (!ctx) {
+                console.error('Failed to get canvas context');
+                return;
+            }
+
+            // Define the vertices of the triangle
+            const v1 = new Vector2D(100, 100);
+            const v2 = new Vector2D(300, 100);
+            const v3 = new Vector2D(200, 300);
+
+            // Log the vertices to the console for debugging
+            console.log(v1.getXY(), v2.getXY(), v3.getXY());
+
+            // Draw the triangle
+            ctx.beginPath();
+            ctx.moveTo(v1.x, v1.y);
+            ctx.lineTo(v2.x, v2.y);
+            ctx.lineTo(v3.x, v3.y);
+            ctx.closePath();
+
+            // Set the style and fill the triangle
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+            ctx.fillStyle = 'lightblue';
+            ctx.fill();
+        };
+    </script>
+</body>
+</html>

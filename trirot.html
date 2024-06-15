@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotated Triangle</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+        class Vector2D {
+            constructor(x, y) {
+                this._x = x;
+                this._y = y;
+            }
+
+            get x() {
+                return this._x;
+            }
+
+            set x(value) {
+                this._x = value;
+            }
+
+            get y() {
+                return this._y;
+            }
+
+            set y(value) {
+                this._y = value;
+            }
+
+            getXY() {
+                return [this._x, this._y];
+            }
+
+            static plus(u, v) {
+                return new Vector2D(u.x + v.x, u.y + v.y);
+            }
+
+            static minus(u, v) {
+                return new Vector2D(u.x - v.x, u.y - v.y);
+            }
+
+            static mult(v, c) {
+                return new Vector2D(c * v.x, c * v.y);
+            }
+
+            incr(v) {
+                this._x += v.x;
+                this._y += v.y;
+                return this;
+            }
+
+            decr(v) {
+                this._x -= v.x;
+                this._y -= v.y;
+                return this;
+            }
+
+            scale(c) {
+                this._x *= c;
+                this._y *= c;
+                return this;
+            }
+
+            rotate(C, cosphi, sinphi) {
+                const dx = this._x - C.x;
+                const dy = this._y - C.y;
+                return new Vector2D(
+                    C.x + dx * cosphi - dy * sinphi,
+                    C.y + dx * sinphi + dy * cosphi
+                );
+            }
+
+            print() {
+                console.log(`( ${this._x}, ${this._y} )`);
+            }
+        }
+
+        window.onload = () => {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            if (!ctx) {
+                console.error('Failed to get canvas context');
+                return;
+            }
+
+            // Define the vertices of the triangle
+            const v1 = new Vector2D(100, 100);
+            const v2 = new Vector2D(300, 100);
+            const v3 = new Vector2D(200, 300);
+
+            // Function to draw a triangle
+            function drawTriangle(vertices, color) {
+                ctx.beginPath();
+                ctx.moveTo(vertices[0].x, vertices[0].y);
+                ctx.lineTo(vertices[1].x, vertices[1].y);
+                ctx.lineTo(vertices[2].x, vertices[2].y);
+                ctx.closePath();
+                ctx.strokeStyle = 'black';
+                ctx.stroke();
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+
+            // Draw the original triangle
+            drawTriangle([v1, v2, v3], 'lightblue');
+
+            // Calculate the centroid of the triangle
+            const centroid = new Vector2D(
+                (v1.x + v2.x + v3.x) / 3,
+                (v1.y + v2.y + v3.y) / 3
+            );
+
+            // Rotation angle in radians
+            const angle = Math.PI / 4; // 45 degrees
+            const cosphi = Math.cos(angle);
+            const sinphi = Math.sin(angle);
+
+            // Rotate the vertices around the centroid
+            const rv1 = v1.rotate(centroid, cosphi, sinphi);
+            const rv2 = v2.rotate(centroid, cosphi, sinphi);
+            const rv3 = v3.rotate(centroid, cosphi, sinphi);
+
+            // Draw the rotated triangle
+            drawTriangle([rv1, rv2, rv3], 'lightgreen');
+        };
+    </script>
+</body>
+</html>
